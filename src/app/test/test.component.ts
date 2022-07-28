@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../user.service';
+import { FormGroup , FormControl , FormBuilder , Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-test',
@@ -7,26 +7,34 @@ import { UserService } from '../user.service';
   styleUrls: ['./test.component.css']
 })
 export class TestComponent implements OnInit {
-  name = "amen"
-  imageUrl = "assets/images/formalab.png"
-  booksList = []
-  usersList: any[] = [];
-  myCondition = true
+  
 
-  constructor(private userService: UserService) { }
+  myForm: FormGroup
+
+  constructor(private fb: FormBuilder) {
+
+    let formControls = {
+      firstname : new FormControl('',[
+        Validators.required,
+        Validators.pattern("[a-z .'-]+"),
+        Validators.minLength(2)
+      ])
+    }
+
+    this.myForm = this.fb.group(formControls);
+
+  }
+
+    get firstname(){
+    return this.myForm.get('firstname');
+  }
 
   ngOnInit(): void {
-    this.userService.getAllUsers().subscribe(
-      result => {
-        this.usersList = result
-      },
-      error => {
-        console.log(error)
-      }
-    )
+    
   }
-  hello(myname: string) {
-    alert('hello ' + myname)
+
+  saveUser(){
+    console.log(this.myForm.value);
   }
 
 }
